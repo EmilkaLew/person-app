@@ -1,51 +1,44 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Person } from './person.model';
-
-const STORAGE_KEY = 'persons';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class PersonService {
 
-  private loadAll(): Person[] {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (!data) {
-      return [];
-    }
-    try {
-      return JSON.parse(data) as Person[];
-    } catch (e) {
-      console.error('Error parsing persons from localStorage', e);
-      return [];
-    }
+  private apiUrl = 'http://localhost:53962/api/persons';
+
+  constructor(private http: HttpClient) {}
+
+  // GET /api/persons
+  getAll(): Observable<Person[]> {
+    console.log('GET', this.apiUrl);
+    return this.http.get<Person[]>(this.apiUrl);
   }
 
-  private saveAll(persons: Person[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(persons));
+  // GET /api/persons/{id}
+  getById(id: number): Observable<Person> {
+    console.log('GET', `${this.apiUrl}/${id}`);
+    return this.http.get<Person>(`${this.apiUrl}/${id}`);
   }
 
-  getAll(): Person[] {
-    return this.loadAll();
+  // POST /api/persons
+  add(person: Person): Observable<Person> {
+    console.log('POST', this.apiUrl, person);
+    return this.http.post<Person>(this.apiUrl, person);
   }
 
-  getByIndex(index: number): Person | undefined {
-    const persons = this.loadAll();
-    return persons[index];
+  // PUT /api/persons/{id}
+  update(id: number, person: Person): Observable<Person> {
+    console.log('PUT', `${this.apiUrl}/${id}`, person);
+    return this.http.put<Person>(`${this.apiUrl}/${id}`, person);
   }
 
-  add(person: Person): void {
-    const persons = this.loadAll();
-    persons.push(person);
-    this.saveAll(persons);
-  }
-
-  delete(index: number): void {
-    const persons = this.loadAll();
-    if (index >= 0 && index < persons.length) {
-      persons.splice(index, 1);
-      this.saveAll(persons);
-    }
+  // DELETE /api/persons/{id}
+  delete(id: number): Observable<void> {
+    console.log('DELETE', `${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

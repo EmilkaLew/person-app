@@ -2,16 +2,26 @@
 
 <button routerLink="/add">Dodaj osobę</button>
 
-<ul>
-  @for (person of persons; track $index) {
-  <li>
-    {{ person.firstName }} {{ person.familyName }} – {{ person.address?.city }}
-    <a [routerLink]="['/details', $index]">Szczegóły</a>
-    <button (click)="delete($index)">Usuń</button>
-  </li>
-  }
-</ul>
+<p *ngIf="error">{{ error }}</p>
 
-@if (persons.length === 0) {
-<p>Brak zapisanych osób.</p>
-}
+<ng-container *ngIf="persons$ | async as persons; else loading">
+  <p>Liczba osób: {{ persons.length }}</p>
+
+  <ul>
+    <li *ngFor="let person of persons">
+      {{ person.firstName }} {{ person.familyName }} – {{ person.address?.city }}
+
+      <a [routerLink]="['/details', person.id]">Szczegóły</a>
+
+      <button (click)="delete(person.id)">Usuń</button>
+    </li>
+  </ul>
+
+  <p *ngIf="persons.length === 0 && !error">
+    Brak zapisanych osób.
+  </p>
+</ng-container>
+
+<ng-template #loading>
+  <p>Wczytywanie danych...</p>
+</ng-template>

@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { PersonService } from '../person';
 import { Person } from '../person.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, NgFor, NgIf, AsyncPipe],
   templateUrl: './list.html',
   styleUrl: './list.css'
 })
 export class ListComponent implements OnInit {
-
-  persons: Person[] = [];
+  persons$!: Observable<Person[]>;
+  error?: string;
 
   constructor(private personService: PersonService) {}
 
@@ -21,11 +23,19 @@ export class ListComponent implements OnInit {
   }
 
   load(): void {
-    this.persons = this.personService.getAll();
+    console.log('Ładuję listę osób (async pipe)...');
+    this.persons$ = this.personService.getAll();
   }
 
-  delete(index: number): void {
-    this.personService.delete(index);
-    this.load();
+  delete(id?: number): void {
+    if (id == null) return;
+
+    this.personService.delete(id).subscribe({
+      next: () => this.load(),
+      error: (err) => {
+        console.error('Błąd usuwania osoby', err);
+        this.error = 'Nie udało się usunąć osoby.';
+      }
+    });
   }
 }

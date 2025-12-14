@@ -1,17 +1,16 @@
 <h2>Szczegóły osoby</h2>
 
-@if (person) {
-<p><strong>Imię:</strong> {{ person.firstName }}</p>
-<p><strong>Nazwisko:</strong> {{ person.familyName }}</p>
-<p><strong>Wiek:</strong> {{ person.age }}</p>
+<p *ngIf="error">{{ error }}</p>
 
-<h3>Adres</h3>
-<p><strong>Miasto:</strong> {{ person.address?.city }}</p>
-<p><strong>Ulica:</strong> {{ person.address?.street }}</p>
-<p><strong>Kod pocztowy:</strong> {{ person.address?.postCode }}</p>
+<div *ngIf="!error">
+  <p><strong>Imię:</strong> {{ person?.firstName }}</p>
+  <p><strong>Nazwisko:</strong> {{ person?.familyName }}</p>
+  <p><strong>Wiek:</strong> {{ person?.age }}</p>
 
-<a routerLink="/">Powrót do listy</a>
-} @else {
-<p>Nie znaleziono osoby o indeksie {{ index }}.</p>
-<a routerLink="/">Powrót do listy</a>
-}
+  <h3>Adres</h3>
+  <p><strong>Miasto:</strong> {{ person?.address?.city }}</p>
+  <p><strong>Ulica:</strong> {{ person?.address?.street }}</p>
+  <p><strong>Kod pocztowy:</strong> {{ person?.address?.postCode }}</p>
+
+  <a routerLink="/">Powrót do listy</a>
+</div>
