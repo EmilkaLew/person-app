@@ -1,27 +1,42 @@
 <h2>Lista osób</h2>
 
-<button routerLink="/add">Dodaj osobę</button>
+<button mat-raised-button color="primary" routerLink="/add">
+  Dodaj osobę
+</button>
 
 <p *ngIf="error">{{ error }}</p>
 
-<ng-container *ngIf="persons$ | async as persons; else loading">
+<ng-container *ngIf="persons$ | async as persons">
   <p>Liczba osób: {{ persons.length }}</p>
 
-  <ul>
-    <li *ngFor="let person of persons">
-      {{ person.firstName }} {{ person.familyName }} – {{ person.address?.city }}
+  <mat-list class="person-list">
+    <mat-list-item *ngFor="let person of persons">
+      <div class="person-item">
+        <div class="person-main">
+          <div class="person-name">
+            {{ person.firstName }} {{ person.familyName }}
+          </div>
+          <div class="person-city">
+            {{ person.address?.city }}
+          </div>
+        </div>
 
-      <a [routerLink]="['/details', person.id]">Szczegóły</a>
+        <div class="person-actions">
+          <button mat-stroked-button color="primary"
+                  [routerLink]="['/details', person.id]">
+            Szczegóły
+          </button>
 
-      <button (click)="delete(person.id)">Usuń</button>
-    </li>
-  </ul>
+          <button mat-raised-button color="warn"
+                  (click)="delete(person.id)">
+            Usuń
+          </button>
+        </div>
+      </div>
+    </mat-list-item>
+  </mat-list>
 
   <p *ngIf="persons.length === 0 && !error">
     Brak zapisanych osób.
   </p>
 </ng-container>
-
-<ng-template #loading>
-  <p>Wczytywanie danych...</p>
-</ng-template>

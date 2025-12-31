@@ -1,0 +1,22 @@
+.person-list {
+  max-width: 700px;
+  margin: 16px auto;
+  background: #fafafa;
+  border-radius: 10px;
+}
+.person-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.person-name {
+  font-weight: 600;
+}
+.person-city {
+  font-size: 13px;
+  color: #666;
+}
+.person-actions button {
+  margin-left: 8px;
+}

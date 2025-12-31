@@ -1,44 +1,76 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Person } from './person.model';
+
+const STORAGE_KEY = 'persons';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PersonService {
 
-  private apiUrl = 'http://localhost:53962/api/persons';
+  private loadAll(): Person[] {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (!data) {
+      return [];
+    }
+    try {
+      return JSON.parse(data) as Person[];
+    } catch (e) {
+      console.error('Error parsing persons from localStorage', e);
+      return [];
+    }
+  }
 
-  constructor(private http: HttpClient) {}
+  private saveAll(persons: Person[]): void {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persons));
+  }
 
-  // GET /api/persons
+  private generateId(persons: Person[]): number {
+    // zakładamy, że Person może mieć pole id (opcjonalne)
+    const ids = persons
+      .map(p => (p as any).id as number | undefined)
+      .filter((id): id is number => id != null);
+
+    if (ids.length === 0) {
+      return 1;
+    }
+    return Math.max(...ids) + 1;
+  }
+
+  // --- API używane przez komponenty ---
+
+  // zamiast HTTP: zwracamy Observable z lokalnych danych
   getAll(): Observable<Person[]> {
-    console.log('GET', this.apiUrl);
-    return this.http.get<Person[]>(this.apiUrl);
+    const persons = this.loadAll();
+    return of(persons);
   }
 
-  // GET /api/persons/{id}
-  getById(id: number): Observable<Person> {
-    console.log('GET', `${this.apiUrl}/${id}`);
-    return this.http.get<Person>(`${this.apiUrl}/${id}`);
+  getById(id: number): Observable<Person | undefined> {
+    const persons = this.loadAll();
+    const person = persons.find(p => (p as any).id === id);
+    return of(person);
   }
 
-  // POST /api/persons
   add(person: Person): Observable<Person> {
-    console.log('POST', this.apiUrl, person);
-    return this.http.post<Person>(this.apiUrl, person);
+    const persons = this.loadAll();
+
+    // kopiujemy obiekt i nadajemy id, jeśli go nie ma
+    const newPerson: any = { ...person };
+    if (newPerson.id == null) {
+      newPerson.id = this.generateId(persons);
+    }
+
+    persons.push(newPerson as Person);
+    this.saveAll(persons);
+
+    return of(newPerson as Person);
   }
 
-  // PUT /api/persons/{id}
-  update(id: number, person: Person): Observable<Person> {
-    console.log('PUT', `${this.apiUrl}/${id}`, person);
-    return this.http.put<Person>(`${this.apiUrl}/${id}`, person);
-  }
-
-  // DELETE /api/persons/{id}
   delete(id: number): Observable<void> {
-    console.log('DELETE', `${this.apiUrl}/${id}`);
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    let persons = this.loadAll();
+    persons = persons.filter(p => (p as any).id !== id);
+    this.saveAll(persons);
+    return of(void 0);
   }
 }

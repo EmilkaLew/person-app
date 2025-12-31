@@ -1,16 +1,23 @@
-<h2>Szczegóły osoby</h2>
+<mat-card class="details-card">
+  <mat-card-title>Szczegóły osoby</mat-card-title>
 
-<p *ngIf="error">{{ error }}</p>
+  <mat-card-content>
+    <p *ngIf="error">{{ error }}</p>
 
-<div *ngIf="!error">
-  <p><strong>Imię:</strong> {{ person?.firstName }}</p>
-  <p><strong>Nazwisko:</strong> {{ person?.familyName }}</p>
-  <p><strong>Wiek:</strong> {{ person?.age }}</p>
+    <div *ngIf="!error">
+      <p><strong>Imię:</strong> {{ person?.firstName }}</p>
+      <p><strong>Nazwisko:</strong> {{ person?.familyName }}</p>
+      <p><strong>Wiek:</strong> {{ person?.age }}</p>
 
-  <h3>Adres</h3>
-  <p><strong>Miasto:</strong> {{ person?.address?.city }}</p>
-  <p><strong>Ulica:</strong> {{ person?.address?.street }}</p>
-  <p><strong>Kod pocztowy:</strong> {{ person?.address?.postCode }}</p>
+      <h3>Adres</h3>
+      <p><strong>Miasto:</strong> {{ person?.address?.city }}</p>
+      <p><strong>Ulica:</strong> {{ person?.address?.street }}</p>
+      <p><strong>Kod pocztowy:</strong> {{ person?.address?.postCode }}</p>
+    </div>
+  </mat-card-content>
 
-  <a routerLink="/">Powrót do listy</a>
-</div>
+  <mat-card-actions class="details-actions">
+    <button mat-stroked-button color="primary" routerLink="/">
+      Powrót
+    </button>
+  </mat-card-actions>

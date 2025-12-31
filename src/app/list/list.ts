@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+
 import { PersonService } from '../person';
 import { Person } from '../person.model';
 import { Observable } from 'rxjs';
@@ -8,11 +12,19 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [RouterLink, NgFor, NgIf, AsyncPipe],
+  imports: [
+    RouterLink,
+    NgFor,
+    NgIf,
+    AsyncPipe,
+    MatListModule,
+    MatButtonModule
+  ],
   templateUrl: './list.html',
   styleUrl: './list.css'
 })
 export class ListComponent implements OnInit {
+
   persons$!: Observable<Person[]>;
   error?: string;
 
@@ -23,7 +35,6 @@ export class ListComponent implements OnInit {
   }
 
   load(): void {
-    console.log('Ładuję listę osób (async pipe)...');
     this.persons$ = this.personService.getAll();
   }
 

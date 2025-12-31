@@ -1,8 +1,13 @@
-<h1>Person App</h1>
-<nav>
-  <a routerLink="">Lista osób</a> |
-  <a routerLink="/add">Dodaj osobę</a>
-</nav>
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="app-title">Person App</span>
+
+  <span class="spacer"></span>
+
+  <button mat-button routerLink="/">Lista osób</button>
+  <button mat-raised-button color="accent" routerLink="/add">Dodaj osobę</button>
+</mat-toolbar>
+
 <hr />
 
 <router-outlet></router-outlet>
+

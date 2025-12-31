@@ -1,13 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+
 import { PersonService } from '../person';
 import { Person } from '../person.model';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [RouterLink, NgIf],
+  imports: [
+    RouterLink,
+    NgIf,
+    MatCardModule,
+    MatButtonModule
+  ],
   templateUrl: './details.html',
   styleUrl: './details.css'
 })
@@ -35,6 +44,11 @@ export class DetailsComponent implements OnInit {
 
       this.personService.getById(id).subscribe({
         next: (p) => {
+          if (!p) {
+            this.error = 'Nie znaleziono osoby o podanym identyfikatorze.';
+            this.person = undefined;
+            return;
+          }
           console.log('Odebrane szczegóły osoby:', p);
           this.person = p;
           this.error = undefined;
@@ -42,7 +56,7 @@ export class DetailsComponent implements OnInit {
         error: (err) => {
           console.error('Błąd pobierania szczegółów osoby', err);
           this.person = undefined;
-          this.error = 'Nie znaleziono osoby o podanym identyfikatorze.';
+          this.error = 'Wystąpił błąd podczas wczytywania danych.';
         }
       });
     });

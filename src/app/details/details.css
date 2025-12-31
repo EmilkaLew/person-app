@@ -1,0 +1,14 @@
+.details-card {
+  max-width: 500px;
+  margin: 24px auto;
+  padding-bottom: 12px;
+}
+.details-card h3 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.details-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px 8px;
+}
